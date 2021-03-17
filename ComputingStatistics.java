@@ -32,9 +32,9 @@ public class ComputingStatistics {
       return amount;
    }
 
-   public String avgLoan(){
+   public double avgLoan(){
      double average = this.totalAmount() / data.size();
-     return "Average Loan: " + average;
+     return average;
    }
 
 ////////////////////////////////////working methods /////////////////////////////////////
@@ -149,4 +149,61 @@ public double largestLoanKenya(){
   return largest;
 }
 
+public double avgLoanPhilippines(){
+  double total = 0;
+  int loanCount = 0;
+  for(Loan i:data){
+    if(i.getCountry().equals("Philippines")){
+      total += i.getLoanAmount();
+      loanCount++;
+    }
+  }
+  if(loanCount == 0){
+    return 0;
+  }
+  return (double)total/loanCount;
+}
+
+public String longestToFundCountry(){
+  int longest = Integer.MIN_VALUE;
+  Loan longestLoan = data.get(0);
+  for(Loan i:data){
+    if(i.getDaysToFund() > longest){
+      longest = i.getDaysToFund();
+      longestLoan = i;
+    }
+  }
+  return longestLoan.getCountry();
+}
+
+public double variance(){
+  double sum = 0.0;
+  for(Loan i:data){
+    sum += Math.pow(i.getLoanAmount() - this.avgLoan(), 2);
+  }
+  return (double)sum/data.size(); 
+  }
+  public double standardDeviation(){
+    return Math.sqrt(this.variance());
+  }
+
+public boolean empiricalRule(){
+  int count = 0;
+  double max = this.avgLoan() + this.standardDeviation();
+  double min = this.avgLoan() - this.standardDeviation();
+  for(Loan i:data){
+    if(i.getLoanAmount() <= max && i.getLoanAmount() >= min){
+      count++;
+    }
+  }
+  System.out.println(count);
+  int percent = (int)((double)count/data.size()*100);
+  System.out.println(percent);
+  if(percent == 68){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
 }
